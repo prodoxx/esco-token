@@ -79,6 +79,16 @@ contract('TokenFarm', ([owner, investor]) => {
 
             result = await tokenFarm.isStaking(investor);
             assert.equal(result.toString(), 'true', 'investor status correct after staking');
+
+            // issue tokens
+            await tokenFarm.issueTokens({ from: owner });
+
+            // Check balance after issuance
+            result = await escoToken.balanceOf(investor);
+            assert.equal(result.toString(), tokens('100'), 'investor esco token wallet balance correct after issuance');
+
+            // Make sure the owner is the only one who can issue ESCO tokens
+            await tokenFarm.issueTokens({ from: investor }).should.be.rejected;
         })
     })
 });
