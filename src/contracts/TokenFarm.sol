@@ -40,6 +40,22 @@ contract TokenFarm {
         hasStaked[msg.sender] = true;
     }
 
+    function unstakeTokens() public {
+        uint256 balance = stakingBalance[msg.sender];
+
+        // Make sure the balance is greater than 0 or stop
+        require(balance > 0, "staking balance cannot be 0");
+
+        // Transfer Mock dai tokens to this contract for staking
+        daiToken.transfer(msg.sender, balance);
+
+        // Reset staking balance
+        stakingBalance[msg.sender] = 0;
+
+        // Update staking status
+        isStaking[msg.sender] = false;
+    }
+
     function issueTokens() public {
         // only owner can call this function
         require(msg.sender == owner, "caller must be the owner");
